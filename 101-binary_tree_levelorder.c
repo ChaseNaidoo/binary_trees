@@ -54,3 +54,16 @@ void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 	free(temp);
 	}
 }
+
+/**
+ * struct queue_node_s - Structure for a queue node
+ * @node: Pointer to the binary tree node
+ * @next: Pointer to the next node in the queue
+ */
+struct queue_node_s
+{
+	const binary_tree_t *node;
+	struct queue_node_s *next;
+};
+
+typedef struct queue_node_s queue_node_t;
