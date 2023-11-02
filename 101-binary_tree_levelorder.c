@@ -9,61 +9,55 @@
  * Return: (no return)
  *
  */
+/**
+ * binary_tree_levelorder - Perform level-order traversal on a binary tree.
+ * @tree: A pointer to the root node of the tree to traverse.
+ * @func: A pointer to a function to call for each node.
+ */
 void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 {
-	if (tree == NULL || func == NULL)
-	return;
+  int height = binary_tree_height(tree);
+  int level;
 
-	queue_node_t *queue = NULL;
-	const binary_tree_t *current;
+  if (tree == NULL || func == NULL)
+    return;
 
-	queue = malloc(sizeof(queue_node_t));
-	if (queue == NULL)
-	return;
-
-	queue->node = tree;
-	queue->next = NULL;
-
-	while (queue)
-	{
-	current = queue->node;
-	func(current->n);
-
-	if (current->left)
-	{
-	queue_node_t *left_node = malloc(sizeof(queue_node_t));
-	if (left_node == NULL)
-	return;
-	left_node->node = current->left;
-	left_node->next = NULL;
-	left_node->next = queue;
-	queue = left_node;
-	}
-	if (current->right)
-	{
-	queue_node_t *right_node = malloc(sizeof(queue_node_t));
-	if (right_node == NULL)
-	return;
-	right_node->node = current->right;
-	right_node->next = NULL;
-	right_node->next = queue;
-	queue = right_node;
-	}
-	queue_node_t *temp = queue;
-	queue = queue->next;
-	free(temp);
-	}
+  for (level = 1; level <= height + 1; level++)
+    levelorder_util(tree, func, level);
 }
 
 /**
- * struct queue_node_s - Structure for a queue node
- * @node: Pointer to the binary tree node
- * @next: Pointer to the next node in the queue
+ * levelorder_util - Helper function for level-order traversal.
+ * @tree: A pointer to the root node of the current subtree.
+ * @func: A pointer to a function to call for each node.
+ * @level: The current level to visit.
  */
-struct queue_node_s
+void levelorder_util(const binary_tree_t *tree, void (*func)(int), int level)
 {
-	const binary_tree_t *node;
-	struct queue_node_s *next;
-};
+  if (tree == NULL)
+    return;
 
-typedef struct queue_node_s queue_node_t;
+  if (level == 1)
+    func(tree->n);
+  else if (level > 1)
+    {
+      levelorder_util(tree->left, func, level - 1);
+      levelorder_util(tree->right, func, level - 1);
+    }
+}
+
+/**
+ * binary_tree_height - Calculate the height of a binary tree.
+ * @tree: A pointer to the root node of the tree.
+ * Return: The height of the tree, or -1 if the tree is NULL.
+ */
+int binary_tree_height(const binary_tree_t *tree)
+{
+  if (tree == NULL)
+    return -1;
+
+  int left_height = binary_tree_height(tree->left);
+  int right_height = binary_tree_height(tree->right);
+
+  return (left_height > right_height ? left_height : right_height) + 1;
+}
